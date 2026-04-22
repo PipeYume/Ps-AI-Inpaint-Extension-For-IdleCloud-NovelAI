@@ -324,19 +324,17 @@ document.getElementById('btnRunInpaint').onclick = async () => {
             const progressPrefix = genCount > 1 ? `[${i + 1}/${genCount}] ` : "";
             
             // API 冷却检查
-            if (i > 0) {
-                const cooldown = AIService.config.service_config.cooldownMs || 20000;
-                const elapsed = Date.now() - AIService.config.service_config.lastRequestTime;
-                
-                if (elapsed < cooldown) {
-                    const waitTimeMs = cooldown - elapsed;
-                    let remainingSec = Math.ceil(waitTimeMs / 1000);
-                    while (remainingSec > 0) {
-                        if (checkAborted()) throw new Error("任务已被强制终止");
-                        updateTaskStatus(taskId, `${progressPrefix}API 冷却中，等待 ${remainingSec} 秒...`);
-                        await new Promise(r => setTimeout(r, 1000));
-                        remainingSec--;
-                    }
+            const cooldown = AIService.config.service_config.cooldownMs || 20000;
+            const elapsed = Date.now() - AIService.config.service_config.lastRequestTime;
+            
+            if (elapsed < cooldown) {
+                const waitTimeMs = cooldown - elapsed;
+                let remainingSec = Math.ceil(waitTimeMs / 1000);
+                while (remainingSec > 0) {
+                    if (checkAborted()) throw new Error("任务已被强制终止");
+                    updateTaskStatus(taskId, `${progressPrefix}API 冷却中，等待 ${remainingSec} 秒...`);
+                    await new Promise(r => setTimeout(r, 1000));
+                    remainingSec--;
                 }
             }
 
