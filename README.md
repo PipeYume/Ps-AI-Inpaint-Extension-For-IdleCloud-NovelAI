@@ -28,7 +28,7 @@
 
 ## 📦 安装方法
 
-1. 将 `com.github.pipeyume.ps_ai_inpaint_plugin` 文件夹复制到 Photoshop 插件安装目录：
+1. 从 [releases](https://github.com/PipeYume/Ps-AI-Inpaint-Extension-For-IdleCloud-NovelAI/releases) 中下载并解压插件的 zip 文件，将 `com.github.pipeyume.ps_ai_inpaint_plugin` 文件夹移动到 Photoshop 插件安装目录：
    * `PS安装目录\Required\CEP\extensions\[插件文件夹放在这里]`
    * 或者 `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions`
 2. 重启 Photoshop。
