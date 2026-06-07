@@ -4,7 +4,7 @@
     <Contact mailto="**@abc.com" />
     <Abstract href="http://www.superslide2.com/" />
     <ExtensionList>
-        <Extension Id="com.github.pipeyume.ps_ai_inpaint_plugin" Version="1.0.2" />
+        <Extension Id="com.github.pipeyume.ps_ai_inpaint_plugin" Version="1.0.3" />
     </ExtensionList>
 
     <ExecutionEnvironment>
