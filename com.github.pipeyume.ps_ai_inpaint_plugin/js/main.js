@@ -1,6 +1,7 @@
 window.onload = () => {
     requestPersistence();
-    AIService.init()
+    AIService.init();
+    bindResolutionEvents();
     syncConfigToUI();
     restoreTaskUI();
 };
@@ -11,6 +12,33 @@ function requestPersistence() {
     event.extensionId = "com.github.pipeyume.ps_ai_inpaint_plugin"; 
     csInterface.dispatchEvent(event);
 }
+
+function bindResolutionEvents() {
+    document.querySelectorAll('input[name="resoPreset"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            document.getElementById('customSizeRow').style.display =
+                this.value === 'custom' ? 'block' : 'none';
+        });
+    });
+}
+
+function getResolution() {
+    const preset = document.querySelector('input[name="resoPreset"]:checked');
+    if (!preset || preset.value !== 'custom') {
+        const val = preset ? preset.value : '1024x1024';
+        return val.split('x').map(Number);
+    }
+    const cw = parseInt(document.getElementById('customW').value) || 64;
+    const ch = parseInt(document.getElementById('customH').value) || 64;
+    const w = Math.max(64, Math.min(2048, cw));
+    const h = Math.max(64, Math.min(2048, ch));
+    if (w % 64 !== 0 || h % 64 !== 0 || w * h > 1048576) {
+        throw new Error("自定义分辨率不合法（宽高必须在64~2048范围内，且为64的倍数、积≤1048576）");
+    }
+    return [w, h];
+}
+
+
 
 function syncConfigToUI() {
     const { service_config, inpaint_config } = AIService.config;
@@ -273,7 +301,14 @@ document.getElementById('btnRunInpaint').onclick = async () => {
     AppLock.lock();
     
     try {
-        const [tw, th] = AIService.config.inpaint_config.resolution.split('x').map(Number);
+        let tw, th;
+        try {
+            [tw, th] = getResolution();
+        } catch (e) {
+            updateTaskStatus(taskId, e.message, "error");
+            AppLock.unlock();
+            return;
+        }
         // --------------------------------------------------------
         // 步骤 1: 截取画布
         // --------------------------------------------------------
@@ -312,6 +347,8 @@ document.getElementById('btnRunInpaint').onclick = async () => {
         const payload = {
             "image": rawImgB64,
             "mask": processedMaskB64,
+            "width": tw,
+            "height": th,
         };
 
         // --------------------------------------------------------

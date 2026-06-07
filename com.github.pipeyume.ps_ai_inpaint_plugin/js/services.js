@@ -21,7 +21,6 @@ const AIService = {
             model: "nai-diffusion-4-5-full",
             positivePrompt: "",
             negativePrompt: "",
-            resolution: "1024x1024",
             steps: 23,
             scale: 5.5,
             sampler: "k_euler",
@@ -117,19 +116,14 @@ const AIService = {
                 "Content-Type": "application/json"
             };
 
-            const resString = this.config.inpaint_config.resolution || "1024x1024";
-            const [w, h] = resString.split('x').map(Number);
-
             const full_payload = {
                 ...this.config.inpaint_config,
-                width: w,
-                height: h,
+                width: payload.width,
+                height: payload.height,
                 action: true,
                 image: payload.image,
                 mask: payload.mask
             };
-
-            delete full_payload.resolution;
 
             // 执行请求：提交任务
             onProgress("正在提交任务...");
@@ -207,8 +201,13 @@ const AIService = {
      * 辅助函数：下载图片
      */
     async _downloadAsBase64(url) {
-        const resp = await fetch(url);
-        if (resp.status !== 200) throw new Error(`下载失败: ${resp.status}`);
+        let resp;
+        try {
+            resp = await fetch(url);
+        } catch (e) {
+            throw new Error(`下载失败 (${e.message}): ${url}`);
+        }
+        if (resp.status !== 200) throw new Error(`下载失败 (${resp.status}): ${url}`);
         const blob = await resp.blob();
         return new Promise((resolve) => {
             const reader = new FileReader();

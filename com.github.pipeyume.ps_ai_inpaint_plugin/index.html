@@ -27,6 +27,29 @@
             </label>
         </div>
     </div>
+    <!-- 分辨率选择 -->
+    <div class="gen-container">
+        <span class="gen-label-text">分辨率:</span>
+        <div class="radio-group-inline">
+            <label class="radio-item">
+                <input type="radio" name="resoPreset" value="1024x1024" checked> 1024x1024
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="resoPreset" value="832x1216"> 832x1216
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="resoPreset" value="1216x832"> 1216x832
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="resoPreset" value="custom"> 自定义
+            </label>
+        </div>
+    </div>
+    <div id="customSizeRow" style="display:none; text-align:center;">
+        <input type="number" id="customW" min="64" max="2048" step="64" value="1024" style="width:72px; text-align:center;">
+        <span style="margin:0 4px;color:#aaa;">×</span>
+        <input type="number" id="customH" min="64" max="2048" step="64" value="1024" style="width:72px; text-align:center;">
+    </div>
 
     <button id="btnOpenTemp" style="background: #444;">📂 打开缓存目录</button>
     <button id="btnOpenConfig" style="background: #444;">📂 打开配置目录</button>
@@ -60,14 +83,6 @@
                 <option value="nai-diffusion-4-full">v4-full</option>
                 <option value="nai-diffusion-4-curated">v4-curated</option>
                 <option value="nai-diffusion-3">v3</option>
-            </select>
-        </div>
-        <div class="setting-group">
-            <label>分辨率:</label>
-            <select id="field-resolution">
-                <option value="1024x1024">1024x1024</option>
-                <option value="832x1216">832x1216</option>
-                <option value="1216x832">1216x832</option>
             </select>
         </div>
 

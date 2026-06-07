@@ -164,6 +164,9 @@ function importAiResult(filePath, maskPath, targetX, targetY, targetDocId, taskI
 
     var result;
     var targetDoc = null;
+    // 记录回填前用户正在查看的文档
+    var previousDoc = app.activeDocument;
+
     for (var i = 0; i < app.documents.length; i++) {
         if (app.documents[i].id == targetDocId) {
             targetDoc = app.documents[i];
@@ -177,6 +180,12 @@ function importAiResult(filePath, maskPath, targetX, targetY, targetDocId, taskI
         );
     } else {
         result = "ERR_DOC_CLOSED";
+    }
+
+    if (previousDoc && previousDoc != targetDoc) {
+        try {
+            app.activeDocument = previousDoc;
+        } catch (e) {}
     }
 
     app.preferences.rulerUnits = oldUnits;
@@ -225,6 +234,9 @@ function performImportLogic(filePath, maskPath, targetX, targetY, targetDocId, t
         } catch (e) {
             group = targetDoc.layerSets.add();
             group.name = "ai_generated";
+            if(originalLayer){
+                group.move(originalLayer, ElementPlacement.PLACEBEFORE);
+            }
         }
         // 用于AI层恢复可见性
         var group_visible = group.visible;
